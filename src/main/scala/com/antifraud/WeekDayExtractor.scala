@@ -11,12 +11,12 @@ import org.apache.spark.sql.types.{DataType, DataTypes}
 
 
 class WeekDayExtractor (override val uid: String)
-  extends UnaryTransformer[String, Int, YearExtractor] with DefaultParamsWritable {
+  extends UnaryTransformer[java.sql.Timestamp, Int, WeekDayExtractor] with DefaultParamsWritable {
 
 
-  def this() = this(Identifiable.randomUID("yearExtractor"))
+  def this() = this(Identifiable.randomUID("WeekDayExtractor"))
 
-  override protected def createTransformFunc: String => Int = java.time.LocalDateTime.parse(_, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).getDayOfWeek().getValue
+  override protected def createTransformFunc: java.sql.Timestamp => Int = _.toLocalDateTime.getDayOfWeek().getValue
 
 
 
@@ -27,9 +27,9 @@ class WeekDayExtractor (override val uid: String)
   override protected def outputDataType: DataType = DataTypes.IntegerType
 
 
-  override def copy(extra: ParamMap): YearExtractor = defaultCopy(extra)
+  override def copy(extra: ParamMap): WeekDayExtractor = defaultCopy(extra)
 }
 
-object WeekDayExtractor extends DefaultParamsReadable[YearExtractor] {
-  override def load(path: String): YearExtractor = super.load(path)
+object WeekDayExtractor extends DefaultParamsReadable[WeekDayExtractor] {
+  override def load(path: String): WeekDayExtractor = super.load(path)
 }

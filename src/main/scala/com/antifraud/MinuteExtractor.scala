@@ -9,22 +9,20 @@ import org.apache.spark.mllib.linalg.{Vector => OldVector, Vectors => OldVectors
 import org.apache.spark.sql.types.{DataType, DataTypes}
 
 
-
 class MinuteExtractor (override val uid: String)
-  extends UnaryTransformer[String, Int, YearExtractor] with DefaultParamsWritable {
+  extends UnaryTransformer[java.sql.Timestamp, Int, MinuteExtractor] with DefaultParamsWritable {
 
+  def this() = this(Identifiable.randomUID("minuteExtractor"))
 
-  def this() = this(Identifiable.randomUID("yearExtractor"))
-
-  override protected def createTransformFunc: String => Int = java.time.LocalDateTime.parse(_, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).getMinute()
+  override protected def createTransformFunc: java.sql.Timestamp => Int = _.toLocalDateTime.getMinute()
 
 
   override protected def outputDataType: DataType = DataTypes.IntegerType
 
 
-  override def copy(extra: ParamMap): YearExtractor = defaultCopy(extra)
+  override def copy(extra: ParamMap): MinuteExtractor = defaultCopy(extra)
 }
 
-object MinuteExtractor extends DefaultParamsReadable[YearExtractor] {
-  override def load(path: String): YearExtractor = super.load(path)
+object MinuteExtractor extends DefaultParamsReadable[MinuteExtractor] {
+  override def load(path: String): MinuteExtractor = super.load(path)
 }

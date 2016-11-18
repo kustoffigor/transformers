@@ -11,12 +11,12 @@ import org.apache.spark.sql.types.{DataType, DataTypes}
 
 
 class DayExtractor (override val uid: String)
-  extends UnaryTransformer[String, Int, YearExtractor] with DefaultParamsWritable {
+  extends UnaryTransformer[java.sql.Timestamp, Int, DayExtractor] with DefaultParamsWritable {
 
 
-  def this() = this(Identifiable.randomUID("yearExtractor"))
+  def this() = this(Identifiable.randomUID("dayExtractor"))
 
-  override protected def createTransformFunc: String => Int = java.time.LocalDateTime.parse(_, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).getDayOfMonth()
+  override protected def createTransformFunc: java.sql.Timestamp => Int = _.toLocalDateTime.getDayOfMonth()
 
 
 
@@ -27,9 +27,9 @@ class DayExtractor (override val uid: String)
   override protected def outputDataType: DataType = DataTypes.IntegerType
 
 
-  override def copy(extra: ParamMap): YearExtractor = defaultCopy(extra)
+  override def copy(extra: ParamMap): DayExtractor = defaultCopy(extra)
 }
 
-object DayExtractor extends DefaultParamsReadable[YearExtractor] {
-  override def load(path: String): YearExtractor = super.load(path)
+object DayExtractor extends DefaultParamsReadable[DayExtractor] {
+  override def load(path: String): DayExtractor = super.load(path)
 }

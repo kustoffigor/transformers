@@ -11,12 +11,12 @@ import org.apache.spark.sql.types.{DataType, DataTypes}
 
 
 class YearExtractor (override val uid: String)
-  extends UnaryTransformer[String, Int, YearExtractor] with DefaultParamsWritable {
+  extends UnaryTransformer[java.sql.Timestamp, Int, YearExtractor] with DefaultParamsWritable {
 
 
   def this() = this(Identifiable.randomUID("yearExtractor"))
 
-  override protected def createTransformFunc: String => Int = java.time.LocalDateTime.parse(_, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).getYear()
+  override protected def createTransformFunc: java.sql.Timestamp => Int = _.toLocalDateTime.getYear()
 
 
 
